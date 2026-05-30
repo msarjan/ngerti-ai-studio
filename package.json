@@ -1,0 +1,8 @@
+{
+  "name": "ngerti-ai-studio",
+  "version": "1.0.0",
+  "description": "Content production studio untuk channel YouTube Ngerti AI",
+  "engines": {
+    "node": ">=18"
+  }
+}

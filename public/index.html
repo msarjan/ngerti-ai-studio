@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ngerti AI Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e10;
+      --surface: #18181c;
+      --surface2: #222228;
+      --border: #2e2e36;
+      --accent: #c8f135;
+      --accent2: #7c6dfa;
+      --text: #f0f0f0;
+      --muted: #888892;
+      --danger: #ff6b6b;
+      --success: #4ade80;
+      --radius: 12px;
+    }
+
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .app { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+
+    /* Header */
+    .header { margin-bottom: 3rem; }
+    .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .logo { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .tagline { font-size: 13px; color: var(--muted); }
+
+    /* Step indicator */
+    .steps { display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; }
+    .step { display: flex; align-items: center; gap: 7px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
+    .step-num { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all .3s; flex-shrink: 0; }
+    .step.active .step-num { background: var(--accent); border-color: var(--accent); color: #0e0e10; }
+    .step.active { color: var(--text); }
+    .step.done .step-num { background: var(--surface2); border-color: var(--accent2); color: var(--accent2); }
+    .step-sep { flex: 1; height: 1px; background: var(--border); }
+
+    /* Section card */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color .3s;
+    }
+    .section.focused { border-color: var(--accent2); }
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.1rem;
+    }
+
+    /* Type selector */
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .type-btn {
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+      cursor: pointer;
+      text-align: left;
+      transition: all .2s;
+      color: var(--text);
+    }
+    .type-btn:hover { border-color: var(--accent2); }
+    .type-btn.selected { border-color: var(--accent); background: rgba(200,241,53,0.06); }
+    .type-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+    .type-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px; }
+    .type-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    /* Form */
+    .field { margin-bottom: 1rem; }
+    .field:last-of-type { margin-bottom: 0; }
+    .field-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .optional { font-size: 11px; color: #4a4a56; font-style: italic; font-weight: 400; }
+    input[type=text], textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      resize: vertical;
+      transition: border-color .2s;
+      outline: none;
+    }
+    input[type=text]:focus, textarea:focus { border-color: var(--accent2); }
+    input[type=text]::placeholder, textarea::placeholder { color: #3e3e4a; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--accent); color: #0e0e10; width: 100%; margin-top: 1.2rem; }
+    .btn-primary:hover:not(:disabled) { background: #d6ff40; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 100%; margin-top: 1.2rem; }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--accent2); }
+    .btn-secondary:disabled { opacity: .35; cursor: not-allowed; }
+    .btn-copy {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 11px;
+      font-size: 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: all .2s;
+    }
+    .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-copy.copied { border-color: var(--success); color: var(--success); }
+
+    /* Loading */
+    .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; padding: 0.5rem 0; }
+    .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Error */
+    .error-box {
+      background: rgba(255,107,107,0.07);
+      border: 1px solid rgba(255,107,107,0.25);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      font-size: 13px;
+      color: var(--danger);
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+    .error-box strong { font-family: 'Syne', sans-serif; display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.5px; }
+    .error-detail { font-size: 11px; color: #ff9999; margin-top: 5px; font-family: monospace; word-break: break-all; }
+
+    /* Result */
+    .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .result-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+    .result-content {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.1rem 1.3rem;
+      font-size: 14px;
+      line-height: 1.8;
+      color: #d5d5e0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .divider { height: 1px; background: var(--border); margin: 1.4rem 0; }
+
+    /* SEO sections */
+    .seo-grid { display: grid; gap: 10px; margin-top: 0.5rem; }
+    .seo-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; }
+    .seo-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .seo-item-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent2); }
+    .seo-item-content { font-size: 14px; line-height: 1.65; color: #ceceda; white-space: pre-wrap; word-break: break-word; }
+
+    /* Utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-top">
+      <div class="dot"></div>
+      <div class="logo">Ngerti<span>AI</span> Studio</div>
+    </div>
+    <div class="tagline">Produksi script & SEO — tanpa copy-paste prompt</div>
+  </div>
+
+  <div class="steps">
+    <div class="step active" id="si1"><div class="step-num">1</div><span>Tipe</span></div>
+    <div class="step-sep"></div>
+    <div class="step" id="si2"><div class="step-num">2</div><span>Input</span></div>
+    <div class="step-sep"></div>
+    <div class="step" id="si3"><div class="step-num">3</div><span>Script</span></div>
+    <div class="step-sep"></div>
+    <div class="step" id="si4"><div class="step-num">4</div><span>SEO</span></div>
+  </div>
+
+  <!-- Step 1: Pilih tipe -->
+  <div class="section focused" id="sec-type">
+    <div class="section-label">Pilih tipe konten</div>
+    <div class="type-grid">
+      <button class="type-btn" id="btn-tutorial" onclick="selectType('tutorial')">
+        <span class="type-icon">🎓</span>
+        <span class="type-name">Tutorial</span>
+        <span class="type-desc">Cara pakai tools AI, step-by-step, tips & trik</span>
+      </button>
+      <button class="type-btn" id="btn-news" onclick="selectType('news')">
+        <span class="type-icon">⚡</span>
+        <span class="type-name">AI News</span>
+        <span class="type-desc">Berita terbaru seputar dunia AI & teknologi</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2a: Input Tutorial -->
+  <div class="section hidden" id="sec-tutorial">
+    <div class="section-label">Detail konten — Tutorial</div>
+    <div class="field">
+      <div class="field-label">Topik video</div>
+      <input type="text" id="t-topik" placeholder="contoh: Cara pakai Gemini untuk riset konten otomatis" />
+    </div>
+    <div class="field">
+      <div class="field-label">Konteks tambahan <span class="optional">opsional</span></div>
+      <textarea id="t-konteks" rows="3" placeholder="angle yang diinginkan, fakta penting, atau sumber referensi..."></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Topik video berikutnya <span class="optional">untuk CTA</span></div>
+      <input type="text" id="t-next" placeholder="contoh: Cara bikin thumbnail AI yang scroll-stopping" />
+    </div>
+    <button class="btn btn-primary" id="btn-gen-tutorial" onclick="generateScript('tutorial')" disabled>
+      ✦ Generate Script
+    </button>
+  </div>
+
+  <!-- Step 2b: Input AI News -->
+  <div class="section hidden" id="sec-news">
+    <div class="section-label">Detail konten — AI News</div>
+    <div class="field">
+      <div class="field-label">Paste teks berita / ringkasan</div>
+      <textarea id="n-berita" rows="7" placeholder="Paste artikel, ringkasan, atau poin-poin penting beritanya di sini..."></textarea>
+    </div>
+    <div class="field">
+      <div class="field-label">Topik video berikutnya <span class="optional">opsional — untuk CTA</span></div>
+      <input type="text" id="n-next" placeholder="Kosongkan kalau belum tahu — CTA otomatis pakai versi value-based" />
+    </div>
+    <button class="btn btn-primary" id="btn-gen-news" onclick="generateScript('news')" disabled>
+      ✦ Generate Script
+    </button>
+  </div>
+
+  <!-- Step 3: Hasil Script -->
+  <div class="section hidden" id="sec-script">
+    <div class="section-label">Hasil script</div>
+    <div id="script-loading" class="loading hidden">
+      <div class="spinner"></div>
+      <span>Lagi nulis script...</span>
+    </div>
+    <div id="script-error" class="hidden"></div>
+    <div id="script-result" class="hidden">
+      <div class="result-header">
+        <div class="result-label">Script siap ✓</div>
+        <button class="btn-copy" onclick="copyEl('script-output', this)">Copy</button>
+      </div>
+      <div class="result-content" id="script-output"></div>
+      <div class="divider"></div>
+      <button class="btn btn-secondary" onclick="generateSEO()">⚙ Generate Paket SEO</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Paket SEO -->
+  <div class="section hidden" id="sec-seo">
+    <div class="section-label">Paket SEO</div>
+    <div id="seo-loading" class="loading hidden">
+      <div class="spinner"></div>
+      <span>Lagi susun paket SEO...</span>
+    </div>
+    <div id="seo-error" class="hidden"></div>
+    <div id="seo-result" class="seo-grid hidden"></div>
+  </div>
+
+</div>
+
+<script>
+  let currentType = null;
+  let currentScript = '';
+
+  function selectType(type) {
+    currentType = type;
+    document.getElementById('btn-tutorial').classList.toggle('selected', type === 'tutorial');
+    document.getElementById('btn-news').classList.toggle('selected', type === 'news');
+    document.getElementById('sec-tutorial').classList.toggle('hidden', type !== 'tutorial');
+    document.getElementById('sec-news').classList.toggle('hidden', type !== 'news');
+    document.getElementById('sec-script').classList.add('hidden');
+    document.getElementById('sec-seo').classList.add('hidden');
+    currentScript = '';
+    setStep(2);
+  }
+
+  function setStep(n) {
+    for (let i = 1; i <= 4; i++) {
+      const el = document.getElementById('si' + i);
+      el.classList.remove('active', 'done');
+      if (i < n) el.classList.add('done');
+      else if (i === n) el.classList.add('active');
+    }
+  }
+
+  document.addEventListener('input', () => {
+    document.getElementById('btn-gen-tutorial').disabled = !document.getElementById('t-topik').value.trim();
+    document.getElementById('btn-gen-news').disabled = !document.getElementById('n-berita').value.trim();
+  });
+
+  function showError(containerId, msg, detail) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = `<div class="error-box"><strong>⚠ ${msg}</strong>${detail ? '<div class="error-detail">' + detail + '</div>' : ''}</div>`;
+    el.classList.remove('hidden');
+  }
+
+  async function callAPI(mode, payload) {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, payload })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    return data.result;
+  }
+
+  async function generateScript(type) {
+    let payload = {};
+    if (type === 'tutorial') {
+      payload = {
+        topik: document.getElementById('t-topik').value.trim(),
+        konteks: document.getElementById('t-konteks').value.trim(),
+        next: document.getElementById('t-next').value.trim()
+      };
+    } else {
+      payload = {
+        berita: document.getElementById('n-berita').value.trim(),
+        next: document.getElementById('n-next').value.trim()
+      };
+    }
+
+    document.getElementById('sec-script').classList.remove('hidden');
+    document.getElementById('script-loading').classList.remove('hidden');
+    document.getElementById('script-result').classList.add('hidden');
+    document.getElementById('script-error').classList.add('hidden');
+    document.getElementById('sec-seo').classList.add('hidden');
+    setStep(3);
+
+    try {
+      const text = await callAPI(type, payload);
+      currentScript = text;
+      document.getElementById('script-output').textContent = text;
+      document.getElementById('script-loading').classList.add('hidden');
+      document.getElementById('script-result').classList.remove('hidden');
+    } catch (e) {
+      document.getElementById('script-loading').classList.add('hidden');
+      showError('script-error', 'Gagal generate script', e.message);
+    }
+  }
+
+  async function generateSEO() {
+    if (!currentScript) return;
+    const tipe = currentType === 'tutorial' ? 'Tutorial' : 'AI News';
+
+    document.getElementById('sec-seo').classList.remove('hidden');
+    document.getElementById('seo-loading').classList.remove('hidden');
+    document.getElementById('seo-result').classList.add('hidden');
+    document.getElementById('seo-error').classList.add('hidden');
+    setStep(4);
+
+    try {
+      const text = await callAPI('seo', { script: currentScript, tipe });
+      renderSEO(text);
+      document.getElementById('seo-loading').classList.add('hidden');
+      document.getElementById('seo-result').classList.remove('hidden');
+    } catch (e) {
+      document.getElementById('seo-loading').classList.add('hidden');
+      showError('seo-error', 'Gagal generate SEO', e.message);
+    }
+  }
+
+  function renderSEO(raw) {
+    const sections = [
+      { key: 'JUDUL UTAMA', label: 'Judul Utama' },
+      { key: 'JUDUL ALTERNATIF', label: 'Judul Alternatif' },
+      { key: 'DESKRIPSI', label: 'Deskripsi' },
+      { key: 'HASHTAG', label: 'Hashtag' },
+      { key: 'TAG VIDEO', label: 'Tag Video' },
+      { key: 'CATATAN SEO', label: 'Catatan SEO' }
+    ];
+    const order = sections.map(s => s.key);
+    const parsed = {};
+    for (let i = 0; i < order.length; i++) {
+      const start = raw.indexOf(order[i] + ':');
+      if (start === -1) continue;
+      const contentStart = start + order[i].length + 1;
+      const nexts = order.slice(i + 1).map(k => raw.indexOf(k + ':')).filter(x => x > start);
+      const end = nexts.length ? Math.min(...nexts) : raw.length;
+      parsed[order[i]] = raw.slice(contentStart, end).trim();
+    }
+    const container = document.getElementById('seo-result');
+    container.innerHTML = '';
+    sections.forEach(s => {
+      if (!parsed[s.key]) return;
+      const id = 'seo-' + s.key.replace(/\s/g, '-');
+      const div = document.createElement('div');
+      div.className = 'seo-item';
+      div.innerHTML = `
+        <div class="seo-item-header">
+          <div class="seo-item-label">${s.label}</div>
+          <button class="btn-copy" onclick="copyEl('${id}', this)">Copy</button>
+        </div>
+        <div class="seo-item-content" id="${id}">${esc(parsed[s.key])}</div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function esc(t) {
+    return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function copyEl(id, btn) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
