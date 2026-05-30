@@ -8,34 +8,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg: #0e0e10;
-      --surface: #18181c;
-      --surface2: #222228;
-      --border: #2e2e36;
-      --accent: #c8f135;
-      --accent2: #7c6dfa;
-      --text: #f0f0f0;
-      --muted: #888892;
-      --danger: #ff6b6b;
-      --success: #4ade80;
+      --bg: #0e0e10; --surface: #18181c; --surface2: #222228; --border: #2e2e36;
+      --accent: #c8f135; --accent2: #7c6dfa; --accent3: #f97316;
+      --text: #f0f0f0; --muted: #888892; --danger: #ff6b6b; --success: #4ade80;
       --radius: 12px;
     }
-
     html, body { height: 100%; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
-
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
     .app { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
 
-    /* Header */
     .header { margin-bottom: 3rem; }
     .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
@@ -44,7 +26,6 @@
     .logo span { color: var(--accent); }
     .tagline { font-size: 13px; color: var(--muted); }
 
-    /* Step indicator */
     .steps { display: flex; align-items: center; gap: 6px; margin-bottom: 2rem; }
     .step { display: flex; align-items: center; gap: 7px; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted); }
     .step-num { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: all .3s; flex-shrink: 0; }
@@ -53,156 +34,80 @@
     .step.done .step-num { background: var(--surface2); border-color: var(--accent2); color: var(--accent2); }
     .step-sep { flex: 1; height: 1px; background: var(--border); }
 
-    /* Section card */
-    .section {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-      transition: border-color .3s;
-    }
+    .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1rem; transition: border-color .3s; }
     .section.focused { border-color: var(--accent2); }
-    .section-label {
-      font-family: 'Syne', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.1rem;
-    }
+    .section-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted); margin-bottom: 1.1rem; }
 
-    /* Type selector */
     .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .type-btn {
-      background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 1.1rem;
-      cursor: pointer;
-      text-align: left;
-      transition: all .2s;
-      color: var(--text);
-    }
+    .type-btn { background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 1.1rem; cursor: pointer; text-align: left; transition: all .2s; color: var(--text); }
     .type-btn:hover { border-color: var(--accent2); }
     .type-btn.selected { border-color: var(--accent); background: rgba(200,241,53,0.06); }
     .type-icon { font-size: 24px; margin-bottom: 8px; display: block; }
     .type-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; display: block; margin-bottom: 3px; }
     .type-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
 
-    /* Form */
     .field { margin-bottom: 1rem; }
     .field:last-of-type { margin-bottom: 0; }
-    .field-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    .field-label { font-size: 13px; font-weight: 500; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
     .optional { font-size: 11px; color: #4a4a56; font-style: italic; font-weight: 400; }
-    input[type=text], textarea {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 13px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      line-height: 1.55;
-      resize: vertical;
-      transition: border-color .2s;
-      outline: none;
-    }
+    input[type=text], textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 13px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.55; resize: vertical; transition: border-color .2s; outline: none; }
     input[type=text]:focus, textarea:focus { border-color: var(--accent2); }
     input[type=text]::placeholder, textarea::placeholder { color: #3e3e4a; }
 
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 11px 20px;
-      border-radius: 8px;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      cursor: pointer;
-      border: none;
-      transition: all .2s;
-      text-decoration: none;
-    }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.2px; cursor: pointer; border: none; transition: all .2s; text-decoration: none; }
     .btn-primary { background: var(--accent); color: #0e0e10; width: 100%; margin-top: 1.2rem; }
     .btn-primary:hover:not(:disabled) { background: #d6ff40; transform: translateY(-1px); }
     .btn-primary:disabled { opacity: .35; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 100%; margin-top: 1.2rem; }
+    .btn-secondary { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 100%; margin-top: 0.6rem; }
     .btn-secondary:hover:not(:disabled) { border-color: var(--accent2); }
     .btn-secondary:disabled { opacity: .35; cursor: not-allowed; }
-    .btn-copy {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 5px 11px;
-      font-size: 11px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      transition: all .2s;
-    }
+    .btn-orange { background: var(--surface2); border: 1px solid var(--border); color: var(--text); width: 100%; margin-top: 0.6rem; }
+    .btn-orange:hover:not(:disabled) { border-color: var(--accent3); color: var(--accent3); }
+    .btn-copy { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 11px; font-size: 11px; border-radius: 6px; cursor: pointer; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 0.3px; transition: all .2s; }
     .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
     .btn-copy.copied { border-color: var(--success); color: var(--success); }
 
-    /* Loading */
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 1.2rem; }
+    .btn-row .btn { margin-top: 0; }
+
     .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 14px; padding: 0.5rem 0; }
     .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Error */
-    .error-box {
-      background: rgba(255,107,107,0.07);
-      border: 1px solid rgba(255,107,107,0.25);
-      border-radius: 8px;
-      padding: 1rem 1.2rem;
-      font-size: 13px;
-      color: var(--danger);
-      line-height: 1.6;
-      margin-top: 0.5rem;
-    }
+    .error-box { background: rgba(255,107,107,0.07); border: 1px solid rgba(255,107,107,0.25); border-radius: 8px; padding: 1rem 1.2rem; font-size: 13px; color: var(--danger); line-height: 1.6; margin-top: 0.5rem; }
     .error-box strong { font-family: 'Syne', sans-serif; display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.5px; }
     .error-detail { font-size: 11px; color: #ff9999; margin-top: 5px; font-family: monospace; word-break: break-all; }
 
-    /* Result */
     .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .result-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
-    .result-content {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.1rem 1.3rem;
-      font-size: 14px;
-      line-height: 1.8;
-      color: #d5d5e0;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
+    .result-content { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.3rem; font-size: 14px; line-height: 1.8; color: #d5d5e0; white-space: pre-wrap; word-break: break-word; }
     .divider { height: 1px; background: var(--border); margin: 1.4rem 0; }
 
-    /* SEO sections */
     .seo-grid { display: grid; gap: 10px; margin-top: 0.5rem; }
     .seo-item { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.2rem; }
     .seo-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .seo-item-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--accent2); }
     .seo-item-content { font-size: 14px; line-height: 1.65; color: #ceceda; white-space: pre-wrap; word-break: break-word; }
 
-    /* Utility */
+    /* Visual table */
+    .visual-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+    .visual-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .visual-table th { background: var(--surface2); color: var(--muted); font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    .visual-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: #d0d0da; vertical-align: top; line-height: 1.5; }
+    .visual-table tr:last-child td { border-bottom: none; }
+    .visual-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .tipe-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; }
+    .tipe-FOOTAGE { background: rgba(124,109,250,0.15); color: #a89ef8; }
+    .tipe-LITERAL { background: rgba(200,241,53,0.12); color: #b8d82e; }
+    .tipe-KONSEP { background: rgba(249,115,22,0.12); color: #f97316; }
+    .tipe-REAKSI { background: rgba(251,191,36,0.12); color: #fbbf24; }
+    .tipe-PUNCHLINE { background: rgba(239,68,68,0.12); color: #f87171; }
+    .tipe-CTA { background: rgba(74,222,128,0.12); color: #4ade80; }
+    .td-num { color: var(--muted); font-size: 12px; width: 28px; }
+    .td-detik { color: var(--muted); font-size: 12px; white-space: nowrap; width: 56px; }
+    .td-teks { max-width: 200px; }
+    .td-ide { max-width: 220px; }
+
     .hidden { display: none !important; }
   </style>
 </head>
@@ -214,7 +119,7 @@
       <div class="dot"></div>
       <div class="logo">Ngerti<span>AI</span> Studio</div>
     </div>
-    <div class="tagline">Produksi script & SEO — tanpa copy-paste prompt</div>
+    <div class="tagline">Produksi script, SEO & ide visual — tanpa copy-paste prompt</div>
   </div>
 
   <div class="steps">
@@ -224,10 +129,10 @@
     <div class="step-sep"></div>
     <div class="step" id="si3"><div class="step-num">3</div><span>Script</span></div>
     <div class="step-sep"></div>
-    <div class="step" id="si4"><div class="step-num">4</div><span>SEO</span></div>
+    <div class="step" id="si4"><div class="step-num">4</div><span>SEO & Visual</span></div>
   </div>
 
-  <!-- Step 1: Pilih tipe -->
+  <!-- Step 1 -->
   <div class="section focused" id="sec-type">
     <div class="section-label">Pilih tipe konten</div>
     <div class="type-grid">
@@ -244,7 +149,7 @@
     </div>
   </div>
 
-  <!-- Step 2a: Input Tutorial -->
+  <!-- Step 2a: Tutorial -->
   <div class="section hidden" id="sec-tutorial">
     <div class="section-label">Detail konten — Tutorial</div>
     <div class="field">
@@ -259,12 +164,10 @@
       <div class="field-label">Topik video berikutnya <span class="optional">untuk CTA</span></div>
       <input type="text" id="t-next" placeholder="contoh: Cara bikin thumbnail AI yang scroll-stopping" />
     </div>
-    <button class="btn btn-primary" id="btn-gen-tutorial" onclick="generateScript('tutorial')" disabled>
-      ✦ Generate Script
-    </button>
+    <button class="btn btn-primary" id="btn-gen-tutorial" onclick="generateScript('tutorial')" disabled>✦ Generate Script</button>
   </div>
 
-  <!-- Step 2b: Input AI News -->
+  <!-- Step 2b: News -->
   <div class="section hidden" id="sec-news">
     <div class="section-label">Detail konten — AI News</div>
     <div class="field">
@@ -273,20 +176,15 @@
     </div>
     <div class="field">
       <div class="field-label">Topik video berikutnya <span class="optional">opsional — untuk CTA</span></div>
-      <input type="text" id="n-next" placeholder="Kosongkan kalau belum tahu — CTA otomatis pakai versi value-based" />
+      <input type="text" id="n-next" placeholder="Kosongkan kalau belum tahu" />
     </div>
-    <button class="btn btn-primary" id="btn-gen-news" onclick="generateScript('news')" disabled>
-      ✦ Generate Script
-    </button>
+    <button class="btn btn-primary" id="btn-gen-news" onclick="generateScript('news')" disabled>✦ Generate Script</button>
   </div>
 
-  <!-- Step 3: Hasil Script -->
+  <!-- Step 3: Script -->
   <div class="section hidden" id="sec-script">
     <div class="section-label">Hasil script</div>
-    <div id="script-loading" class="loading hidden">
-      <div class="spinner"></div>
-      <span>Lagi nulis script...</span>
-    </div>
+    <div id="script-loading" class="loading hidden"><div class="spinner"></div><span>Lagi nulis script...</span></div>
     <div id="script-error" class="hidden"></div>
     <div id="script-result" class="hidden">
       <div class="result-header">
@@ -295,26 +193,53 @@
       </div>
       <div class="result-content" id="script-output"></div>
       <div class="divider"></div>
-      <button class="btn btn-secondary" onclick="generateSEO()">⚙ Generate Paket SEO</button>
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="generateSEO()">⚙ Generate Paket SEO</button>
+        <button class="btn btn-orange" onclick="generateVisual()">✦ Generate Ide Visual</button>
+      </div>
     </div>
   </div>
 
-  <!-- Step 4: Paket SEO -->
+  <!-- Step 4a: SEO -->
   <div class="section hidden" id="sec-seo">
     <div class="section-label">Paket SEO</div>
-    <div id="seo-loading" class="loading hidden">
-      <div class="spinner"></div>
-      <span>Lagi susun paket SEO...</span>
-    </div>
+    <div id="seo-loading" class="loading hidden"><div class="spinner"></div><span>Lagi susun paket SEO...</span></div>
     <div id="seo-error" class="hidden"></div>
     <div id="seo-result" class="seo-grid hidden"></div>
   </div>
 
-</div>
+  <!-- Step 4b: Visual -->
+  <div class="section hidden" id="sec-visual">
+    <div class="section-label">Ide Visual</div>
+    <div id="visual-loading" class="loading hidden"><div class="spinner"></div><span>Lagi susun ide visual...</span></div>
+    <div id="visual-error" class="hidden"></div>
+    <div id="visual-result" class="hidden">
+      <div class="result-header">
+        <div class="result-label">Slot visual siap ✓</div>
+        <button class="btn-copy" onclick="copyVisualRaw(this)">Copy semua</button>
+      </div>
+      <div class="visual-table-wrap">
+        <table class="visual-table" id="visual-table">
+          <thead>
+            <tr>
+              <th class="td-num">#</th>
+              <th class="td-detik">~Detik</th>
+              <th class="td-teks">Teks yang Diucapkan</th>
+              <th>Tipe</th>
+              <th class="td-ide">Ide Visual</th>
+            </tr>
+          </thead>
+          <tbody id="visual-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
+</div>
 <script>
   let currentType = null;
   let currentScript = '';
+  let visualRawText = '';
 
   function selectType(type) {
     currentType = type;
@@ -324,6 +249,7 @@
     document.getElementById('sec-news').classList.toggle('hidden', type !== 'news');
     document.getElementById('sec-script').classList.add('hidden');
     document.getElementById('sec-seo').classList.add('hidden');
+    document.getElementById('sec-visual').classList.add('hidden');
     currentScript = '';
     setStep(2);
   }
@@ -373,14 +299,13 @@
         next: document.getElementById('n-next').value.trim()
       };
     }
-
     document.getElementById('sec-script').classList.remove('hidden');
     document.getElementById('script-loading').classList.remove('hidden');
     document.getElementById('script-result').classList.add('hidden');
     document.getElementById('script-error').classList.add('hidden');
     document.getElementById('sec-seo').classList.add('hidden');
+    document.getElementById('sec-visual').classList.add('hidden');
     setStep(3);
-
     try {
       const text = await callAPI(type, payload);
       currentScript = text;
@@ -396,13 +321,11 @@
   async function generateSEO() {
     if (!currentScript) return;
     const tipe = currentType === 'tutorial' ? 'Tutorial' : 'AI News';
-
     document.getElementById('sec-seo').classList.remove('hidden');
     document.getElementById('seo-loading').classList.remove('hidden');
     document.getElementById('seo-result').classList.add('hidden');
     document.getElementById('seo-error').classList.add('hidden');
     setStep(4);
-
     try {
       const text = await callAPI('seo', { script: currentScript, tipe });
       renderSEO(text);
@@ -411,6 +334,67 @@
     } catch (e) {
       document.getElementById('seo-loading').classList.add('hidden');
       showError('seo-error', 'Gagal generate SEO', e.message);
+    }
+  }
+
+  async function generateVisual() {
+    if (!currentScript) return;
+    const tipe = currentType === 'tutorial' ? 'Tutorial' : 'AI News';
+    document.getElementById('sec-visual').classList.remove('hidden');
+    document.getElementById('visual-loading').classList.remove('hidden');
+    document.getElementById('visual-result').classList.add('hidden');
+    document.getElementById('visual-error').classList.add('hidden');
+    setStep(4);
+    try {
+      const text = await callAPI('visual', { script: currentScript, tipe });
+      visualRawText = text;
+      renderVisual(text);
+      document.getElementById('visual-loading').classList.add('hidden');
+      document.getElementById('visual-result').classList.remove('hidden');
+    } catch (e) {
+      document.getElementById('visual-loading').classList.add('hidden');
+      showError('visual-error', 'Gagal generate ide visual', e.message);
+    }
+  }
+
+  function renderVisual(raw) {
+    const tbody = document.getElementById('visual-tbody');
+    tbody.innerHTML = '';
+    const lines = raw.split('\n');
+    const tipeColors = ['FOOTAGE','LITERAL','KONSEP','REAKSI','PUNCHLINE','CTA'];
+
+    for (const line of lines) {
+      // Match markdown table rows: | col | col | col | col | col |
+      const trimmed = line.trim();
+      if (!trimmed.startsWith('|') || trimmed.startsWith('|---') || trimmed.startsWith('| #') || trimmed.startsWith('| ---')) continue;
+      const cols = trimmed.split('|').map(c => c.trim()).filter((c, i, arr) => i > 0 && i < arr.length - 1);
+      if (cols.length < 4) continue;
+
+      const [num, detik, teks, tipe, ide] = cols;
+      if (!num || num === '#') continue;
+
+      const tipeUpper = (tipe || '').toUpperCase().trim();
+      const tipeMatch = tipeColors.find(t => tipeUpper.includes(t)) || '';
+      const tipeBadge = tipeMatch
+        ? `<span class="tipe-badge tipe-${tipeMatch}">${tipe}</span>`
+        : `<span class="tipe-badge" style="background:rgba(255,255,255,0.05);color:var(--muted)">${tipe}</span>`;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-num">${esc(num)}</td>
+        <td class="td-detik">${esc(detik || '')}</td>
+        <td class="td-teks">${esc(teks || '')}</td>
+        <td>${tipeBadge}</td>
+        <td class="td-ide">${esc(ide || '')}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    // Fallback: kalau tidak ada baris terparsing, tampilkan teks mentah
+    if (tbody.children.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="5" style="white-space:pre-wrap;color:#d0d0da;font-size:13px;line-height:1.6">${esc(raw)}</td>`;
+      tbody.appendChild(tr);
     }
   }
 
@@ -452,7 +436,7 @@
   }
 
   function esc(t) {
-    return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
   function copyEl(id, btn) {
@@ -461,6 +445,14 @@
       btn.textContent = 'Copied ✓';
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function copyVisualRaw(btn) {
+    navigator.clipboard.writeText(visualRawText).then(() => {
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy semua'; btn.classList.remove('copied'); }, 2000);
     });
   }
 </script>
