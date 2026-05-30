@@ -174,7 +174,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Mode tidak valid. Gunakan: tutorial, news, seo, atau visual' });
   }
 
-  const maxTokens = mode === 'seo' ? 2048 : mode === 'visual' ? 3000 : 2048;
+  const maxTokens = mode === 'seo' ? 2048 : mode === 'visual' ? 8192 : 2048;
 
   const requestBody = {
     system_instruction: { parts: [{ text: systemPrompt }] },
