@@ -133,7 +133,7 @@ export default async function handler(req, res) {
   const requestBody = {
     system_instruction: { parts: [{ text: systemPrompt }] },
     contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-    generationConfig: { maxOutputTokens: 1500, temperature: 0.8 },
+    generationConfig: { maxOutputTokens: mode === 'seo' ? 2048 : 1500, temperature: 0.8 },
     ...(useGrounding && { tools: [{ google_search: {} }] })
   };
 
@@ -153,7 +153,8 @@ export default async function handler(req, res) {
     }
 
     const data = await geminiRes.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+   const parts = data.candidates?.[0]?.content?.parts || [];
+   const text = parts.map(p => p.text || '').join('').trim();
 
     if (!text) {
       return res.status(500).json({ error: 'Respons kosong dari Gemini', raw: data });
