@@ -191,7 +191,7 @@
         <div class="result-label">Script siap ✓</div>
         <button class="btn-copy" onclick="copyEl('script-output', this)">Copy</button>
       </div>
-      <div class="result-content" id="script-output"></div>
+      <textarea class="result-content" id="script-output" rows="8" oninput="currentScript = this.value"></textarea>
       <div class="divider"></div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="generateSEO()">⚙ Generate Paket SEO</button>
@@ -309,7 +309,7 @@
     try {
       const text = await callAPI(type, payload);
       currentScript = text;
-      document.getElementById('script-output').textContent = text;
+      document.getElementById('script-output').value = text;
       document.getElementById('script-loading').classList.add('hidden');
       document.getElementById('script-result').classList.remove('hidden');
     } catch (e) {
