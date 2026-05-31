@@ -174,17 +174,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Mode tidak valid. Gunakan: tutorial, news, seo, atau visual' });
   }
 
-  const maxTokens = mode === 'seo' ? 2048 : mode === 'visual' ? 8192 : 2048;
+  const maxTokens = mode === 'seo' ? 3000 : mode === 'visual' ? 8192 : 3000;
+
+  const useGrounding = mode === 'tutorial' || mode === 'news';
 
   const requestBody = {
     system_instruction: { parts: [{ text: systemPrompt }] },
     contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
-    generationConfig: { maxOutputTokens: maxTokens, temperature: 0.8 }
+    generationConfig: { maxOutputTokens: maxTokens, temperature: 0.8 },
+    ...(useGrounding && { tools: [{ google_search: {} }] })
   };
 
   try {
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
