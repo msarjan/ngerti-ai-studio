@@ -80,7 +80,9 @@
 
     .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .result-label { font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+    /* FIX: result-content kini juga berlaku untuk textarea#script-output */
     .result-content { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1.1rem 1.3rem; font-size: 14px; line-height: 1.8; color: #d5d5e0; white-space: pre-wrap; word-break: break-word; }
+    textarea.result-content { resize: vertical; min-height: 160px; font-family: 'DM Sans', sans-serif; }
     .divider { height: 1px; background: var(--border); margin: 1.4rem 0; }
 
     .seo-grid { display: grid; gap: 10px; margin-top: 0.5rem; }
@@ -191,7 +193,8 @@
         <div class="result-label">Script siap ✓</div>
         <button class="btn-copy" onclick="copyEl('script-output', this)">Copy</button>
       </div>
-      <textarea class="result-content" id="script-output" rows="8" oninput="currentScript = this.value"></textarea>
+      <!-- FIX 1: Ganti <div> jadi <textarea> supaya bisa diedit -->
+      <textarea class="result-content" id="script-output" rows="10"></textarea>
       <div class="divider"></div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="generateSEO()">⚙ Generate Paket SEO</button>
@@ -309,6 +312,7 @@
     try {
       const text = await callAPI(type, payload);
       currentScript = text;
+      // FIX 2: Pakai .value karena script-output sekarang adalah <textarea>
       document.getElementById('script-output').value = text;
       document.getElementById('script-loading').classList.add('hidden');
       document.getElementById('script-result').classList.remove('hidden');
@@ -319,6 +323,8 @@
   }
 
   async function generateSEO() {
+    // FIX 3: Baca langsung dari textarea supaya editan user ikut terbawa
+    currentScript = document.getElementById('script-output').value.trim();
     if (!currentScript) return;
     const tipe = currentType === 'tutorial' ? 'Tutorial' : 'AI News';
     document.getElementById('sec-seo').classList.remove('hidden');
@@ -338,6 +344,8 @@
   }
 
   async function generateVisual() {
+    // FIX 4: Baca langsung dari textarea supaya editan user ikut terbawa
+    currentScript = document.getElementById('script-output').value.trim();
     if (!currentScript) return;
     const tipe = currentType === 'tutorial' ? 'Tutorial' : 'AI News';
     document.getElementById('sec-visual').classList.remove('hidden');
@@ -439,8 +447,10 @@
     return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
+  // FIX 5: Handle baik <textarea>/<input> (.value) maupun <div> (.textContent)
   function copyEl(id, btn) {
-    const text = document.getElementById(id).textContent;
+    const el = document.getElementById(id);
+    const text = (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') ? el.value : el.textContent;
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = 'Copied ✓';
       btn.classList.add('copied');
