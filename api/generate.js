@@ -69,10 +69,10 @@ DESKRIPSI:
 [2-3 kalimat natural, keyword utama di kalimat pertama]
 
 HASHTAG:
-[tepat 5 hashtag]
+[tepat 5 hashtag, WAJIB ditulis dalam SATU BARIS dipisahkan spasi — JANGAN turun baris. Contoh: #ai #tutorial #chatgpt #gratis #teknologi]
 
 TAG VIDEO:
-[8-10 tag, urut spesifik ke umum, long-tail, campur Indonesia-Inggris]
+[8-10 tag, urut spesifik ke umum, long-tail, campur Indonesia-Inggris. WAJIB ditulis dalam SATU BARIS dipisahkan koma — JANGAN turun baris, JANGAN pakai penomoran. Contoh: tutorial chatgpt gratis, cara pakai chatgpt, chatgpt untuk pemula, ai tools indonesia]
 
 CATATAN SEO:
 [1-2 kalimat flag keyword potensial atau saran judul]
@@ -82,7 +82,8 @@ ATURAN:
 - Channel kecil: hindari head term terlalu kompetitif
 - Tag: long-tail dulu, head term sebagai pelengkap
 - Hashtag tepat 5, di deskripsi bukan judul
-- #Shorts tidak perlu — YouTube auto-detect`;
+- #Shorts tidak perlu — YouTube auto-detect
+- HASHTAG dan TAG VIDEO masing-masing HARUS satu baris utuh, tidak boleh satu item per baris`;
 
 const PROMPT_VISUAL_TUTORIAL = `Kamu adalah visual director untuk YouTube Shorts channel "Ngerti AI".
 Tugasmu memecah script TUTORIAL jadi slot-slot visual dan memberi ide visual per slot.
@@ -141,6 +142,49 @@ OUTPUT — tabel dengan kolom:
 
 Untuk slot REAKSI, jangan sebut nama kategori — deskripsikan ekspresi/momennya supaya mudah dicari di koleksi meme.`;
 
+// Memaksa format HASHTAG (satu baris, dipisah spasi) dan TAG VIDEO (satu baris,
+// dipisah koma) tidak peduli bagaimana pun Gemini memformat responsnya.
+// Ini jaring pengaman di luar instruksi prompt, supaya hasil konsisten 100%.
+function normalizeSEOText(text) {
+  const order = ['JUDUL UTAMA', 'JUDUL ALTERNATIF', 'DESKRIPSI', 'HASHTAG', 'TAG VIDEO', 'CATATAN SEO'];
+  const sections = {};
+
+  for (let i = 0; i < order.length; i++) {
+    const key = order[i];
+    const start = text.indexOf(key + ':');
+    if (start === -1) continue;
+    const contentStart = start + key.length + 1;
+    const nexts = order.slice(i + 1).map(k => text.indexOf(k + ':')).filter(x => x > start);
+    const end = nexts.length ? Math.min(...nexts) : text.length;
+    sections[key] = text.slice(contentStart, end).trim();
+  }
+
+  if (sections['HASHTAG']) {
+    const tags = sections['HASHTAG']
+      .split(/[\n,]+/)
+      .map(t => t.trim())
+      .filter(Boolean)
+      .map(t => (t.startsWith('#') ? t : '#' + t.replace(/^#+/, '')));
+    sections['HASHTAG'] = tags.join(' ');
+  }
+
+  if (sections['TAG VIDEO']) {
+    const tags = sections['TAG VIDEO']
+      .split(/[\n,]+/)
+      .map(t => t.trim())
+      .map(t => t.replace(/^[-•\d.]+\s*/, '')) // buang bullet/penomoran kalau ada
+      .filter(Boolean);
+    sections['TAG VIDEO'] = tags.join(', ');
+  }
+
+  let result = '';
+  for (const key of order) {
+    if (sections[key] === undefined) continue;
+    result += key + ':\n' + sections[key] + '\n\n';
+  }
+  return result.trim() || text;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -172,7 +216,7 @@ export default async function handler(req, res) {
     userPrompt = `BERITA: ${payload.berita}\nTOPIK VIDEO BERIKUTNYA: ${payload.next || ''}`;
   } else if (mode === 'seo') {
     systemPrompt = PROMPT_SEO;
-    userPrompt = `SCRIPT:\n${payload.script}\n\nTIPE KONTEN: ${payload.tipe}\n\nPenting: hasilkan semua 6 section (JUDUL UTAMA, JUDUL ALTERNATIF, DESKRIPSI, HASHTAG, TAG VIDEO, CATATAN SEO) secara lengkap.`;
+    userPrompt = `SCRIPT:\n${payload.script}\n\nTIPE KONTEN: ${payload.tipe}\n\nPenting: hasilkan semua 6 section (JUDUL UTAMA, JUDUL ALTERNATIF, DESKRIPSI, HASHTAG, TAG VIDEO, CATATAN SEO) secara lengkap. HASHTAG dan TAG VIDEO masing-masing satu baris utuh.`;
   } else if (mode === 'visual') {
     systemPrompt = payload.tipe === 'Tutorial' ? PROMPT_VISUAL_TUTORIAL : PROMPT_VISUAL_NEWS;
     userPrompt = `SCRIPT:\n${payload.script}`;
@@ -208,10 +252,14 @@ export default async function handler(req, res) {
 
     const data = await geminiRes.json();
     const parts = data.candidates?.[0]?.content?.parts || [];
-    const text = parts.map(p => p.text || '').join('').trim();
+    let text = parts.map(p => p.text || '').join('').trim();
 
     if (!text) {
       return res.status(500).json({ error: 'Respons kosong dari Gemini', raw: data });
+    }
+
+    if (mode === 'seo') {
+      text = normalizeSEOText(text);
     }
 
     return res.status(200).json({ result: text });
